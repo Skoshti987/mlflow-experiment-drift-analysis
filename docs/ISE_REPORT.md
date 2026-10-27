@@ -7,7 +7,7 @@
 - **Roll Number(s):** `[Your Roll Number / PRN]`
 - **Department / Class:** `[Department of Computer Engineering / AI & DS / IT, Class: BE / B.Tech]`
 - **Academic Year:** `A.Y. 2026–27`
-- **GitHub Repository URL:** `https://github.com/<your-username>/mlflow-experiment-drift-analysis`
+- **GitHub Repository URL:** `https://github.com/Skoshti987/mlflow-experiment-drift-analysis`
 
 ---
 
@@ -122,7 +122,7 @@ The Two-Sample KS test demonstrated precise statistical discernment:
 
 ## 5. GitHub Repository and Reproducibility
 
-- **GitHub Repository URL:** `https://github.com/<your-username>/mlflow-experiment-drift-analysis`
+- **GitHub Repository URL:** `https://github.com/Skoshti987/mlflow-experiment-drift-analysis`
 - **Source code / Notebook:** Modular Python implementation containing `train_and_drift.py`, `src/data_loader.py`, `src/train_model.py`, and `src/drift_detection.py`.
 - **README and execution instructions:** Complete copy-paste ready instructions for Windows PowerShell / CMD provided in [`README.md`](file:///d:/sem7/mldevops/ISE2Theory/README.md).
 - **Requirements / Dependencies:** Pinned and tested dependencies documented in [`requirements.txt`](file:///d:/sem7/mldevops/ISE2Theory/requirements.txt).

@@ -229,6 +229,6 @@ git commit -m "feat: complete MLOps ISE experiment tracking and data drift analy
 
 # Add your remote and push
 git branch -M main
-git remote add origin https://github.com/<your-username>/mlflow-experiment-drift-analysis.git
+git remote add origin https://github.com/Skoshti987/mlflow-experiment-drift-analysis.git
 git push -u origin main
 ```
