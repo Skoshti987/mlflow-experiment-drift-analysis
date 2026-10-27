@@ -1,0 +1,68 @@
+{
+    "project": "MLflow Experiment Tracking and Data Drift Analysis",
+    "method": "Two-Sample Kolmogorov-Smirnov Test (scipy.stats.ks_2samp)",
+    "alpha_threshold": 0.05,
+    "total_features_evaluated": 4,
+    "drifted_features_count": 1,
+    "drifted_features_list": [
+        "petal length (cm)"
+    ],
+    "overall_drift_status": "DRIFT_DETECTED",
+    "scenario_metadata": {
+        "drift_type": "Covariate Shift (Data Drift / Distribution Shift)",
+        "shift_feature": "petal length (cm)",
+        "shift_magnitude": 1.8,
+        "reference_sample_size": 75,
+        "current_sample_size": 75,
+        "simulation_note": "Simulated controlled shift added to 'petal length (cm)' (+1.8 cm) to test Kolmogorov-Smirnov detection. Not naturally observed in wild data.",
+        "alpha_threshold": 0.05,
+        "environment": {
+            "python_version": "3.11.9",
+            "platform": "Windows-10-10.0.26300-SP0",
+            "mlflow_version": "2.22.5",
+            "sklearn_version": "1.9.1",
+            "scipy_version": "1.17.1",
+            "pandas_version": "2.3.3",
+            "numpy_version": "1.26.4"
+        }
+    },
+    "statistical_interpretation": {
+        "null_hypothesis": "Reference and current samples share identical continuous distributions.",
+        "rule": "p_value < alpha rejects null hypothesis (evidence of feature drift).",
+        "caution": "Data drift indicates covariate shift; it does NOT automatically imply concept drift."
+    },
+    "feature_details": [
+        {
+            "feature": "sepal length (cm)",
+            "ks_statistic": 0.0,
+            "p_value": 1.0,
+            "alpha_threshold": 0.05,
+            "drift_detected": false,
+            "drift_status": "No Drift"
+        },
+        {
+            "feature": "sepal width (cm)",
+            "ks_statistic": 0.0,
+            "p_value": 1.0,
+            "alpha_threshold": 0.05,
+            "drift_detected": false,
+            "drift_status": "No Drift"
+        },
+        {
+            "feature": "petal length (cm)",
+            "ks_statistic": 0.45333,
+            "p_value": 0.0,
+            "alpha_threshold": 0.05,
+            "drift_detected": true,
+            "drift_status": "Drift Detected"
+        },
+        {
+            "feature": "petal width (cm)",
+            "ks_statistic": 0.0,
+            "p_value": 1.0,
+            "alpha_threshold": 0.05,
+            "drift_detected": false,
+            "drift_status": "No Drift"
+        }
+    ]
+}
