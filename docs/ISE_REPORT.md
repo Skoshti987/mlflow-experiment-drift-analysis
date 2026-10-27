@@ -1,201 +1,134 @@
-# Academic In-Semester Evaluation (ISE) Report
+# MLflow Installation, Experiment Tracking and Data Drift Analysis
 
----
+## Details
 
-### Project Title:
-## MLflow Installation, Experiment Tracking and Data Drift Analysis
-
-**Course:** MLOps / Machine Learning DevOps  
-**Academic Year:** A.Y. 2026–27  
-**Student Name:** `[Your Full Name]`  
-**Roll Number / PRN:** `[Your Roll Number]`  
-**Department / Class:** `[Department of Computer Engineering / AI & DS / IT, Class: BE / B.Tech]`  
-**Institution:** `[Your College / Institute Name]`  
-**GitHub Repository:** `[https://github.com/your-username/mlflow-experiment-drift-analysis]`  
-**Date of Evaluation:** October 27, 2026  
+### Student Entry
+- **Student Name:** `[Your Full Name]`
+- **Roll Number(s):** `[Your Roll Number / PRN]`
+- **Department / Class:** `[Department of Computer Engineering / AI & DS / IT, Class: BE / B.Tech]`
+- **Academic Year:** `A.Y. 2026–27`
+- **GitHub Repository URL:** `https://github.com/<your-username>/mlflow-experiment-drift-analysis`
 
 ---
 
 ## 1. MLflow Installation and Experiment Tracking
 
 ### 1.1 Environment Setup
-The development and evaluation environment was established on **Windows 11 (build 10.0.26300)** using VS Code. Prior to environment initialization, the host system was inspected:
-- A host default Python 3.15 runtime was identified.
-- To prevent binary wheel incompatibilities with MLflow and SciPy compiled C-extensions on Windows, a dedicated, isolated project virtual environment (`.venv`) was instantiated using **Python 3.11.9 (64-bit)** via `py -3.11 -m venv .venv`.
-- Core MLOps and scientific computing dependencies were pinned and installed into the virtual environment using `pip install -r requirements.txt`.
-
-#### Installed and Verified Package Versions (From Actual Execution):
-| Component / Library | Verified Runtime Version | Functional Role in Pipeline |
-|:---|:---|:---|
-| **Operating System** | `Windows-10-10.0.26300-SP0` | Host execution platform |
-| **Python** | `3.11.9` | Primary runtime engine |
-| **MLflow** | `2.22.5` | Experiment tracking server and artifact repository |
-| **Scikit-Learn** | `1.9.1` | Iris dataset loader & Random Forest classifier |
-| **SciPy** | `1.17.1` | Two-sample Kolmogorov-Smirnov test (`scipy.stats.ks_2samp`) |
-| **Pandas** | `2.3.3` | Tabular data structures and report generation |
-| **NumPy** | `1.26.4` | Numerical array computations |
-| **Matplotlib** | `3.11.2` | Diagnostic drift distribution plotting |
-| **Pytest** | `8.4.2` | Automated unit & integration testing framework |
+- **Operating System:** Windows 11 (64-bit, Build: `Windows-10-10.0.26300-SP0`)
+- **Python Version:** `3.11.9` (Isolated project virtual environment: `.venv`)
+- **MLflow Version:** `2.22.5`
+- **Installation and verification status:**
+  Successfully installed in a dedicated virtual environment with all core scientific dependencies (`scikit-learn 1.9.1`, `scipy 1.17.1`, `pandas 2.3.3`, `numpy 1.26.4`, `matplotlib 3.11.2`, and `pytest 8.4.2`). Verified via direct CLI import, 100% passing automated test suite (11/11 tests green), and active HTTP status (200 OK) from the MLflow UI server.
 
 ### 1.2 Experiment Tracking
-MLflow was integrated to guarantee reproducibility, auditability, and governance over machine learning experiments.
-- An MLflow experiment titled **`Iris_MLflow_Drift_Analysis`** was initialized using the local file-system tracking store (`./mlruns`).
-- Two independent, decoupled runs were tracked within this experiment:
-  1. **`Model_Training_And_Evaluation` (Run ID: `6993254ceaae4f1cb16be36adac29d02`)**:
-     - **Logged Hyperparameters:** `model_type="RandomForestClassifier"`, `n_estimators=100`, `random_seed=42`, `test_size=0.20`, `train_samples=120`, `test_samples=30`, `python_version="3.11.9"`, `mlflow_version="2.22.5"`.
-     - **Logged Evaluation Metrics:** `accuracy=0.9000`, `precision=0.9024`, `recall=0.9000`, `weighted_f1_score=0.8997`.
-     - **Logged Model Artifacts:** Full Scikit-learn model logged via `mlflow.sklearn.log_model()` under `random_forest_model` containing `MLmodel`, `model.pkl`, `conda.yaml`, and `requirements.txt`.
-     - **Logged Diagnostics:** Classification report exported as `reports/classification_report.txt`.
-  2. **`Data_Drift_Analysis` (Run ID: `95e11b0ba9ff41f5b469b2b5a8bf8df9`)**:
-     - **Logged Parameters:** `statistical_test="Kolmogorov-Smirnov (2-sample)"`, `significance_threshold_alpha=0.05`, `simulated_shift_feature="petal length (cm)"`, `simulated_shift_magnitude=1.8`, `reference_sample_count=75`, `current_sample_count=75`.
-     - **Logged Metrics:** Per-feature KS statistics (`ks_stat_*`) and p-values (`p_val_*`), plus aggregate `drifted_features_count=1`.
-     - **Logged Artifacts:** `drift_reports/drift_results.csv`, `drift_reports/drift_summary.json`, `drift_visualizations/drift_distribution.png`, and `drift_visualizations/feature_drift.png`.
-
-The MLflow web UI dashboard was launched locally via:
-```powershell
-mlflow ui --host 127.0.0.1 --port 5000
-```
-accessible at `http://127.0.0.1:5000`.
+- **Experiment Name:** `Iris_MLflow_Drift_Analysis`
+- **Experiment Objective:**
+  Establish an end-to-end MLOps experiment tracking and continuous monitoring pipeline. The pipeline logs classification model hyperparameters, performance evaluation metrics, and serialized model binaries, while decoupling statistical data drift monitoring into a separate tracked run with analytical reports and visual distribution artifacts.
+- **Parameters, metrics or artifacts recorded:**
+  - **Run 1: `Model_Training_And_Evaluation`**
+    - *Parameters:* `model_type="RandomForestClassifier"`, `n_estimators=100`, `random_seed=42`, `test_size=0.20`, `train_samples=120`, `test_samples=30`, `python_version="3.11.9"`, `mlflow_version="2.22.5"`, `sklearn_version="1.9.1"`.
+    - *Metrics:* Accuracy = `0.9000` (90.00%), Precision = `0.9024` (Weighted), Recall = `0.9000` (Weighted), Weighted F1-Score = `0.8997`.
+    - *Artifacts:* Serialized Scikit-Learn Model (`random_forest_model/` containing `MLmodel`, `model.pkl`, `conda.yaml`, `requirements.txt`), Classification Report (`reports/classification_report.txt`).
+  - **Run 2: `Data_Drift_Analysis`**
+    - *Parameters:* `statistical_test="Kolmogorov-Smirnov (2-sample)"`, `significance_threshold_alpha=0.05`, `simulated_shift_feature="petal length (cm)"`, `simulated_shift_magnitude=1.8`, `reference_sample_count=75`, `current_sample_count=75`, `total_features_tested=4`.
+    - *Metrics:* `ks_stat_petal_length_cm=0.4533`, `p_val_petal_length_cm=0.0000`, `ks_stat_sepal_length_cm=0.0000`, `p_val_sepal_length_cm=1.0000`, `ks_stat_sepal_width_cm=0.0000`, `p_val_sepal_width_cm=1.0000`, `ks_stat_petal_width_cm=0.0000`, `p_val_petal_width_cm=1.0000`, `drifted_features_count=1`.
+    - *Artifacts:* `reports/drift_results.csv`, `reports/drift_summary.json`, `artifacts/drift_distribution.png`, `artifacts/feature_drift.png`.
+- **Brief description of successful execution:**
+  The orchestrator script `train_and_drift.py` executed successfully in 18 seconds without errors. It loaded and validated the Iris dataset, trained a Random Forest model, logged all parameters and metrics to MLflow, performed two-sample Kolmogorov-Smirnov hypothesis tests, exported CSV/JSON reports, generated multi-panel distribution plots, and saved all runs to the local tracking store (`./mlruns`). The local dashboard was launched and verified on `http://127.0.0.1:5000`.
 
 ---
 
 ## 2. Dataset Identification
 
 ### 2.1 Problem Statement
-In production machine learning systems, models are trained on static historical data, but real-world data distributions frequently change over time due to seasonal fluctuations, sensory degradation, or environmental variations. This phenomenon leads to **silent model decay** where a previously accurate model makes erroneous predictions without throwing system errors. The objective of this project is to construct an automated MLOps pipeline that tracks model lineage and implements statistical monitoring to detect data distribution changes before downstream inference failures occur.
+In production machine learning systems, deployed models are vulnerable to silent degradation when real-world operational distributions diverge from historical training distributions. In domains such as automated agricultural classification, botanical monitoring, and biological quality inspection, environmental variations and sensor discrepancies cause "Covariate Shift" (Data Drift). This project addresses the challenge of building an automated MLOps monitoring mechanism that flags distribution shifts before they cause inference failures.
 
 ### 2.2 Dataset Details
-The **Iris Flower Dataset** curated in `scikit-learn.datasets` was programmatically ingested and audited:
-- **Total Instances:** 150 records
-- **Number of Features:** 4 numerical continuous features:
-  1. `sepal length (cm)` [Range: 4.3 – 7.9 cm]
-  2. `sepal width (cm)`  [Range: 2.0 – 4.4 cm]
-  3. `petal length (cm)` [Range: 1.0 – 6.9 cm]
-  4. `petal width (cm)`  [Range: 0.1 – 2.5 cm]
-- **Target Variable:** Flower species multiclass label:
-  - Class `0`: *Iris setosa* (50 samples)
-  - Class `1`: *Iris versicolor* (50 samples)
-  - Class `2`: *Iris virginica* (50 samples)
-- **Data Integrity Verification:** Missing values = 0 (zero null or NaN values detected).
-- **Data Splitting:** Stratified sampling split of 80% training (120 samples, 40 per class) and 20% testing (30 samples, 10 per class) with random seed `42`.
+- **Dataset Name:** Iris Flower Dataset
+- **Dataset Source:** Scikit-Learn (`sklearn.datasets.load_iris`) / UCI Machine Learning Repository
+- **Number of Records:** 150 instances (120 training, 30 testing via stratified 80/20 split)
+- **Important Features:** 4 continuous numerical morphological measurements:
+  1. `sepal length (cm)`
+  2. `sepal width (cm)`
+  3. `petal length (cm)`
+  4. `petal width (cm)`
+- **Target Variable (if applicable):** Flower species class (Categorical multiclass: `0: setosa`, `1: versicolor`, `2: virginica` — balanced at 50 records per class)
+- **Use Case Category:** ML (Supervised Classification) & MLOps Continuous Drift Monitoring
 
 ### 2.3 Dataset Selection Rationale
-1. **Continuous Multivariate Nature:** The Iris dataset features are strictly continuous numerical variables, making them statistically ideal for non-parametric continuous hypothesis testing such as the Kolmogorov-Smirnov test.
-2. **Clear Feature Demarcation:** Distinct morphological variations between classes (specifically petal dimensions) allow controlled drift simulations to mimic real-world sensor calibrations or biological shifts.
-3. **Standard Benchmark:** Iris provides an unencumbered, universally accepted benchmark for testing MLOps tracking pipelines and statistical algorithms without data cleaning ambiguities.
+The Iris dataset provides four well-defined, continuous numerical variables with zero missing values, making it an ideal statistical benchmark for the continuous Two-Sample Kolmogorov-Smirnov test. Because flower species exhibit distinct morphological petal dimensions, injecting a controlled shift into petal length provides a clear, verifiable demonstration of distribution divergence without introducing data-cleaning confounders.
 
 ---
 
 ## 3. Drift Scenario and Detection Method
 
-### 3.1 Drift Type: Theoretical Taxonomy
-To ensure conceptual clarity in MLOps governance, we distinguish between three fundamental forms of distribution drift:
-
-```
-               [ Input Space X ] ---------------------> [ Output Space Y ]
-                       |                                        |
-                       v                                        v
-               Data Drift (Covariate)                 Prediction Drift
-               P(X) shifts; P(Y|X) constant          P(Y_pred) shifts
-                                        \              /
-                                         v            v
-                                        Concept Drift
-                                        P(Y|X) shifts
-```
-
-1. **Data Drift (Covariate Shift):**
-   - Occurs when the probability distribution of input features changes: $P(X_{\text{current}}) \neq P(X_{\text{reference}})$, while the conditional probability distribution of the target given the features remains invariant: $P(Y|X_{\text{current}}) = P(Y|X_{\text{reference}})$.
-   - *Example:* A thermometer begins recording in a warmer environment, but the physical freezing point remains identical.
-2. **Concept Drift:**
-   - Occurs when the mapping between input features and target labels shifts: $P(Y|X_{\text{current}}) \neq P(Y|X_{\text{reference}})$, regardless of whether $P(X)$ changes.
-   - *Example:* Macroeconomic inflation changes consumer purchasing power, meaning a past income level now corresponds to a different credit risk category.
-3. **Prediction Drift (Prior Probability Shift):**
-   - Occurs when the distribution of model output predictions $P(\hat{Y})$ shifts over time, reflecting changes in either input data or decision boundaries.
-
-**Focus of this Project:** This project specifically focuses on **Data Drift (Covariate Shift)** in input features.
+### 3.1 Drift Type
+- **Identified Drift Type:** **Data Drift (Covariate Shift)**
+- *Taxonomy Context:*
+  - **Data Drift:** The input feature distribution shifts: $P(X_{\text{current}}) \neq P(X_{\text{reference}})$, while the relationship to output labels $P(Y|X)$ remains constant. (Primary focus of this project).
+  - **Concept Drift:** The conditional probability mapping shifts: $P(Y|X_{\text{current}}) \neq P(Y|X_{\text{reference}})$.
+  - **Prediction Drift:** The distribution of model output predictions shifts: $P(\hat{Y}_{\text{current}}) \neq P(\hat{Y}_{\text{reference}})$.
 
 ### 3.2 Reference and Current Data
-- **Reference Dataset ($D_{\text{ref}}$):** A reproducibly sampled subset consisting of 50% of the Iris feature data ($N = 75$ records) sampled with random state `42`, representing the baseline historical data distribution.
-- **Current Dataset ($D_{\text{curr}}$):** Created by duplicating the baseline reference dataset and injecting a controlled synthetic offset of **$+1.8\text{ cm}$** into the `petal length (cm)` feature:
-  $$\text{petal length}_{\text{curr}} = \text{petal length}_{\text{ref}} + 1.8\text{ cm}$$
-- **Controlled Simulation Note:** *This distribution shift is strictly synthetic and intentionally injected for educational verification of the hypothesis test. It is not naturally observed in wild Iris measurements.* The remaining three features (`sepal length`, `sepal width`, `petal width`) remain unperturbed to test false-positive avoidance.
+- **Reference Dataset:** 75 samples randomly and reproducibly drawn (50% sample, random seed 42) from the validated baseline Iris features, representing historical training data.
+- **Current Dataset:** A duplicate copy of the reference baseline with a controlled, synthetic offset of **$+1.8\text{ cm}$** injected into `petal length (cm)`.
+- *Simulation Clarification:* This shift is strictly simulated to model environmental sensor calibration error or seasonal growth shifts, and is not naturally observed in wild Iris measurements. The remaining three features were left untouched to test false-positive avoidance.
 
-### 3.3 Detection Method: Two-Sample Kolmogorov–Smirnov (KS) Test
-The two-sample Kolmogorov–Smirnov test (`scipy.stats.ks_2samp`) is a non-parametric hypothesis test that determines whether two independent continuous univariate samples originate from identical distributions.
-
-#### Mathematical Foundation:
-Let $F_{\text{ref}}(x)$ and $F_{\text{curr}}(x)$ represent the empirical cumulative distribution functions (ECDFs) of the reference and current samples:
-$$F_n(x) = \frac{1}{n}\sum_{i=1}^{n} \mathbf{1}_{(-\infty, x]}(X_i)$$
-The Kolmogorov–Smirnov test statistic $D$ quantifies the supremum (maximum vertical distance) between the two ECDFs:
-$$D = \sup_{x} |F_{\text{ref}}(x) - F_{\text{curr}}(x)|$$
-
-#### Hypothesis Testing Framework:
-- **Null Hypothesis ($H_0$):** Both samples are drawn from identical continuous probability distributions ($F_{\text{ref}}(x) = F_{\text{curr}}(x)$).
-- **Alternative Hypothesis ($H_1$):** The two samples are drawn from different continuous probability distributions ($F_{\text{ref}}(x) \neq F_{\text{curr}}(x)$).
-- **Significance Level ($\alpha$):** Set to $\alpha = 0.05$.
-- **Decision Rule:**
-  - If $p\text{-value} < \alpha$ (0.05): **Reject $H_0$**. Statistically significant evidence of Data Drift.
-  - If $p\text{-value} \ge \alpha$ (0.05): **Fail to reject $H_0$**. No statistically significant evidence of Data Drift.
+### 3.3 Detection Method
+- **Method / Statistical Test / Tool Used:**
+  Two-Sample Kolmogorov–Smirnov (KS) test implemented via `scipy.stats.ks_2samp`. The KS test calculates the maximum absolute vertical difference ($D$) between the empirical cumulative distribution functions (ECDFs) of the reference and current samples:
+  $$D = \sup_{x} |F_{\text{reference}}(x) - F_{\text{current}}(x)|$$
+- **Features or outputs analyzed:**
+  All four numerical input features: `sepal length (cm)`, `sepal width (cm)`, `petal length (cm)`, and `petal width (cm)`.
+- **Detection threshold or criteria, if applicable:**
+  Significance level **$\alpha = 0.05$**.
+  - **Null Hypothesis ($H_0$):** Reference and current samples are drawn from identical continuous probability distributions.
+  - **Decision Rule:** Reject $H_0$ if $p\text{-value} < 0.05$ (Statistically significant evidence of Data Drift). Fail to reject $H_0$ if $p\text{-value} \ge 0.05$ (No Drift).
 
 ---
 
 ## 4. Results, Interpretation and Conclusion
 
-### 4.1 Drift Analysis Results (From Actual Pipeline Execution)
-The pipeline was executed in the active environment. The exact statistical metrics calculated by `scipy.stats.ks_2samp` are tabulated below:
+### 4.1 Drift Analysis Results
+Actual values obtained from execution:
 
 | Feature Name | KS Statistic ($D$) | p-value | Threshold ($\alpha$) | Null Hypothesis ($H_0$) | Drift Decision |
 |:---|:---:|:---:|:---:|:---:|:---:|
-| **sepal length (cm)** | `0.00000` | `1.000000` | `0.05` | Fail to Reject $H_0$ | **No Drift** |
-| **sepal width (cm)** | `0.00000` | `1.000000` | `0.05` | Fail to Reject $H_0$ | **No Drift** |
-| **petal length (cm)** | `0.45333` | `0.000000` ($< 10^{-12}$) | `0.05` | **Reject $H_0$** | **Drift Detected** |
-| **petal width (cm)** | `0.00000` | `1.000000` | `0.05` | Fail to Reject $H_0$ | **No Drift** |
+| **sepal length (cm)** | `0.00000` | `1.0000e+00` | `0.05` | Fail to Reject | **No Drift** |
+| **sepal width (cm)** | `0.00000` | `1.0000e+00` | `0.05` | Fail to Reject | **No Drift** |
+| **petal length (cm)** | `0.45333` | `0.0000e+00` | `0.05` | **Reject $H_0$** | **Drift Detected** |
+| **petal width (cm)** | `0.00000` | `1.0000e+00` | `0.05` | Fail to Reject | **No Drift** |
 
-#### Pipeline Model Evaluation Metrics (Baseline Run `6993254ceaae4f1cb16be36adac29d02`):
-- **Accuracy:** `0.9000` (90.00%)
-- **Precision:** `0.9024` (Weighted)
-- **Recall:** `0.9000` (Weighted)
-- **F1-Score:** `0.8997` (Weighted)
+- **Total Features Evaluated:** 4
+- **Drifted Features Detected:** 1 (`petal length (cm)`)
+- **Overall Pipeline Status:** `DRIFT_DETECTED`
+- Detailed CSV reports (`reports/drift_results.csv`), JSON summaries (`reports/drift_summary.json`), and publication-grade plots (`artifacts/drift_distribution.png`, `artifacts/feature_drift.png`) were exported and logged as MLflow artifacts.
 
 ### 4.2 Interpretation
-1. **Detection of Perturbed Feature:**
-   For `petal length (cm)`, the KS statistic reached $D = 0.45333$ with a p-value of $0.000000$ ($p < 0.05$). The null hypothesis was decisively rejected, confirming that the two-sample KS test successfully identified the simulated covariate shift.
-2. **Robustness Against False Positives:**
-   For the three unperturbed features (`sepal length`, `sepal width`, `petal width`), the KS statistic remained $0.00000$ with $p = 1.000000$. The test did not flag false positives on identical distributions.
-3. **Statistical vs. Performance Nuance:**
-   Rejection of $H_0$ confirms **statistical data drift (covariate shift)**. It proves that the empirical distribution of `petal length` in current data differs significantly from reference data. **However, a statistically significant KS test does NOT prove by itself that model accuracy has decayed (concept drift).** If the shifted values remain within a region where the classifier's decision boundary is invariant, predictions may still be accurate. Conversely, if petal length was a dominant decision feature near the boundary, accuracy degradation is highly probable.
+The Two-Sample KS test demonstrated precise statistical discernment:
+1. **Successful Drift Identification:** On the perturbed feature `petal length (cm)`, the KS distance widened to $D = 0.4533$ with an infinitesimal p-value ($p = 0.0000 < 0.05$), decisively rejecting $H_0$.
+2. **False-Alarm Immunity:** For all unperturbed features (`sepal length`, `sepal width`, `petal width`), the statistic was $D = 0.0000$ and $p = 1.0000$, proving zero false positives.
+3. **Engineering Significance:** In an operational inspection pipeline, this indicates that the physical distribution of petal measurements has shifted significantly. While statistical data drift does not automatically imply that classification accuracy has collapsed (concept drift), it indicates that model predictions are operating on out-of-distribution inputs.
 
 ### 4.3 Conclusion and Recommended Action
-- **Summary:** The MLOps pipeline demonstrated robust experiment tracking with MLflow and successful statistical drift detection using SciPy.
-- **Recommended Operational Protocol:**
-  1. **Automated Alerting:** Trigger an alert to the MLOps engineering on-call channel when $\ge 1$ feature exhibits $p < 0.05$.
-  2. **Data Pipeline Inspection:** Verify upstream sensory instrumentation or data ingestion scripts to determine whether the shift is due to a faulty sensor or true environmental changes.
-  3. **Performance Audit:** Collect ground-truth labels for recent inference requests to evaluate whether empirical accuracy has dipped below the baseline $0.9000$.
-  4. **Retraining Strategy:** If concept drift is substantiated, initiate an automated retraining pipeline on recent data, log the new model to the MLflow Model Registry, and execute shadow deployment before promotion to production.
+- **Conclusion:** **Statistically significant data drift was detected** in feature `petal length (cm)`. No drift was observed in the remaining features.
+- **Appropriate Next Actions:**
+  1. *Immediate Alert:* Dispatch an automated notification to the MLOps engineering team regarding covariate shift on `petal length`.
+  2. *Upstream Sensor Audit:* Inspect measurement devices or upstream data ingestion code to rule out physical sensor calibration error.
+  3. *Inference Ground-Truth Auditing:* Sample recent inference queries and obtain verified ground-truth labels to evaluate if live accuracy has dropped below the baseline $0.9000$.
+  4. *Automated Retraining:* If accuracy degradation is substantiated, trigger an automated retraining pipeline on recently collected data, register the updated model in MLflow Model Registry, and execute shadow validation before deployment.
 
 ---
 
 ## 5. GitHub Repository and Reproducibility
 
-### 5.1 Repository Readiness
-The repository is completely configured with standard root files:
-- `.gitignore`: Excludes `.venv/`, `__pycache__/`, `mlruns/`, `.pytest_cache/`, and local temporary files.
-- `requirements.txt`: Pinned and verified dependencies.
-- `train_and_drift.py`: One-command execution script.
-- `tests/`: 11 automated test cases passing with 100% success rate.
-- `reports/` and `artifacts/`: Generated drift CSV, JSON summary, and high-resolution PNG plots.
-
-### 5.2 Verification Commands (Copy-Paste Ready)
-```powershell
-# 1. Activate Environment
-.\.venv\Scripts\Activate.ps1
-
-# 2. Run Test Suite
-pytest -v
-
-# 3. Execute Complete Pipeline
-python train_and_drift.py
-
-# 4. Launch MLflow Dashboard
-mlflow ui --host 127.0.0.1 --port 5000
-```
+- **GitHub Repository URL:** `https://github.com/<your-username>/mlflow-experiment-drift-analysis`
+- **Source code / Notebook:** Modular Python implementation containing `train_and_drift.py`, `src/data_loader.py`, `src/train_model.py`, and `src/drift_detection.py`.
+- **README and execution instructions:** Complete copy-paste ready instructions for Windows PowerShell / CMD provided in [`README.md`](file:///d:/sem7/mldevops/ISE2Theory/README.md).
+- **Requirements / Dependencies:** Pinned and tested dependencies documented in [`requirements.txt`](file:///d:/sem7/mldevops/ISE2Theory/requirements.txt).
+- **Screenshots and drift reports:**
+  - Audit reports: `reports/drift_results.csv`, `reports/drift_summary.json`, `reports/classification_report.txt`.
+  - Visual distribution plots: `artifacts/drift_distribution.png`, `artifacts/feature_drift.png`.
+  - Step-by-step screenshot submission checklist: [`screenshots/README.md`](file:///d:/sem7/mldevops/ISE2Theory/screenshots/README.md).
+- **MLflow experiment and drift-analysis evidence:**
+  Local experiment `Iris_MLflow_Drift_Analysis` saved under `./mlruns` tracking runs `Model_Training_And_Evaluation` (Run ID: `cefc6b197971411fb14cf0581b37b94d`) and `Data_Drift_Analysis` (Run ID: `f033bc6ed2734a29bd416379654df506`) accessible at `http://127.0.0.1:5000`.
